@@ -1,0 +1,63 @@
+#!/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Net\Bazzline\Component\Cli\Arguments\Arguments;
+use Net\Bazzline\Component\Command\Command;
+
+$arguments = new Arguments($argv);
+
+try {
+    $values                         = $arguments->getValues();
+    $numberOfValues                 = count($values);
+    $invalidNumberOfValuesProvided  = ($numberOfValues < 3);
+
+    if ($invalidNumberOfValuesProvided) {
+        $message = 'invalid number of arguments supplied';
+
+        throw new RuntimeException($message);
+    }
+
+    $host                           = (string) $values[0];
+    $invalidHostProvided            = (strlen($host) < 1);
+    $applicantName                  = (string) $values[1];
+    $invalidApplicantNameProvided   = (strlen($applicantName) < 1);
+    $name                           = (string) $values[2];
+    $invalidNameProvided            = (strlen($name) < 1);
+
+    if ($invalidHostProvided) {
+        $message = 'invalid host supplied';
+
+        throw new RuntimeException($message);
+    }
+
+    if ($invalidApplicantNameProvided) {
+        $message = 'invalid applicant name supplied';
+
+        throw new RuntimeException($message);
+    }
+
+    if ($invalidNameProvided) {
+        $message = 'invalid name supplied';
+
+        throw new RuntimeException($message);
+    }
+
+    $command = new Command();
+    //@see: http://www.computerhope.com/unix/curl.htm
+    $lines = $command('/bin/env curl -s --ssl-no-revoke -X POST -d applicant_name="' . $applicantName . '" -d name="' . $name . '" ' . $host . '/unique-number-repository');
+
+    foreach ($lines as $line) {
+        echo $line . PHP_EOL;
+    }
+} catch (Exception $exception) {
+    $usage = 'usage: ' . PHP_EOL .
+        '    ' . basename(__FILE__) . ' <host> <applicant name> <repository name>' . PHP_EOL;
+
+    echo 'An error occurred' . PHP_EOL;
+    echo $exception->getMessage() . PHP_EOL;
+    echo PHP_EOL;
+    echo $usage;
+    exit(1);
+}
