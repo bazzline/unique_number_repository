@@ -100,7 +100,7 @@ $application->_route('DELETE /unique-number-repository/@name/@number', function(
 
     $repository = $locator->getUniqueNumberRepository();
     $repository->filterBy('repository_name', urldecode($name));
-    $repository->filterBy('number', $number);
+    $repository->filterBy('number', (int) $number);
     $result = $repository->delete();
 
     if ($result !== true) {
