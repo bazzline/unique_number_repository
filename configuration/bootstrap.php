@@ -10,6 +10,7 @@ use flight\Engine;
 use Net\Bazzline\UniqueNumberRepository\Domain\Model\RepositoryRequest;
 use Net\Bazzline\UniqueNumberRepository\Application\Service\ApplicationLocator;
 use Net\Bazzline\UniqueNumberRepository\Domain\Model\UniqueNumberRequest;
+
 const VERSION = '1.0.0';
 
 $application    = new Engine();
@@ -18,6 +19,9 @@ $locator        = new ApplicationLocator();
 //begin of overriding default functionality
 $application->map('notFound', function() use ($application) {
     $application->_json('not found', 404);
+});
+$application->map('error', function(Exception $exception) use ($application) {
+    $application->_json($exception->getMessage(), 500);
 });
 //end of overriding default functionality
 
@@ -63,6 +67,7 @@ $application->_route('POST /unique-number-repository', function() use ($applicat
             'occurred_on'       => $repositoryRequest->occurredOn()->getTimestamp()
         )
     );
+
     $application->_json(array('id' => $id));
 });
 

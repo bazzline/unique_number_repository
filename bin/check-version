@@ -1,0 +1,58 @@
+#!/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Net\Bazzline\Component\Cli\Arguments\Arguments;
+use Net\Bazzline\Component\Command\Command;
+
+const SUPPORTED_VERSION = '1.0.0';
+
+$arguments = new Arguments($argv);
+
+try {
+    $values                         = $arguments->getValues();
+    $numberOfValues                 = count($values);
+    $invalidNumberOfValuesProvided  = ($numberOfValues < 1);
+
+    if ($invalidNumberOfValuesProvided) {
+        $message = 'invalid number of arguments supplied';
+
+        throw new RuntimeException($message);
+    }
+
+    $host                           = (string) $values[0];
+    $invalidHostProvided            = (strlen($host) < 1);
+
+    if ($invalidHostProvided) {
+        $message = 'invalid host supplied';
+
+        throw new RuntimeException($message);
+    }
+
+    $command = new Command();
+    $lines              = $command('/bin/env curl -s --ssl-no-revoke -X GET ' . $host . '/version');
+    $versionAvailable   = (count($lines) > 0);
+
+    if ($versionAvailable) {
+        $version            = json_decode($lines[0]);
+        $isSupportedVersion = ($version === SUPPORTED_VERSION);
+
+        if ($isSupportedVersion) {
+            echo 'ok' . PHP_EOL;
+        } else {
+            echo $version . ' is not supported' . PHP_EOL;
+        }
+    } else {
+        echo 'no version returned' . PHP_EOL;
+    }
+} catch (Exception $exception) {
+    $usage = 'usage: ' . PHP_EOL .
+        '    ' . basename(__FILE__) . ' <host>' . PHP_EOL;
+
+    echo 'An error occurred' . PHP_EOL;
+    echo $exception->getMessage() . PHP_EOL;
+    echo PHP_EOL;
+    echo $usage;
+    exit(1);
+}

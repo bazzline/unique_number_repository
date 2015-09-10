@@ -8,7 +8,12 @@ namespace Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage;
 use Net\Bazzline\Component\Database\FileStorage\Repository;
 use Net\Bazzline\Component\Locator\FactoryInterface;
 use Net\Bazzline\Component\Locator\LocatorInterface;
+use Net\Bazzline\UniqueNumberRepository\Application\Service\ApplicationLocator;
 
+/**
+ * Class AbstractRepositoryFactory
+ * @package Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage
+ */
 abstract class AbstractRepositoryFactory implements FactoryInterface
 {
     /** @var ApplicationLocator */

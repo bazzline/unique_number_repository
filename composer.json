@@ -6,7 +6,7 @@
     "minimum-stability": "dev",
     "require": {
         "mikecao/flight": "^1.2",
-        "net_bazzline/php_component_locator_database_file_storage": "dev-master",
+        "net_bazzline/php_component_database_file_storage": "dev-master",
         "net_bazzline/php_component_locator_generator": "dev-master"
     },
     "license": "LGPLv3",
