@@ -10,24 +10,24 @@ return array(
     ),
     'instances' => array(
         array(
-            'alias'         => 'RepositoryFactory',
-            'class_name'    => '\Net\Bazzline\Component\Database\FileStorage\RepositoryFactory',
+            'alias'         => 'StorageFactory',
+            'class_name'    => '\Net\Bazzline\Component\Database\FileStorage\Storage\StorageFactory',
             'is_factory'    => false,
             'is_shared'     => true
         ),
         array(
-            'alias'         => 'RepositoryRepository',
-            'class_name'    => '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\RepositoryRepositoryFactory',
+            'alias'         => 'RepositoryStorage',
+            'class_name'    => '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\RepositoryStorageFactory',
             'is_factory'    => true,
             'is_shared'     => true,
-            'return_value'  => '\Net\Bazzline\Component\Database\FileStorage\Repository'
+            'return_value'  => '\Net\Bazzline\Component\Database\FileStorage\Storage\Storage'
         ),
         array(
-            'alias'         => 'UniqueNumberRepository',
-            'class_name'    => '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\UniqueNumberRepositoryFactory',
+            'alias'         => 'UniqueNumberStorage',
+            'class_name'    => '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\UniqueNumberStorageFactory',
             'is_factory'    => true,
             'is_shared'     => true,
-            'return_value'  => '\Net\Bazzline\Component\Database\FileStorage\Repository'
+            'return_value'  => '\Net\Bazzline\Component\Database\FileStorage\Storage\Storage'
         ),
         array(
             'alias'         => 'UniqueNumberEnumerator',

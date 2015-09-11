@@ -5,16 +5,16 @@
  */
 namespace Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage;
 
-use Net\Bazzline\Component\Database\FileStorage\Repository;
+use Net\Bazzline\Component\Database\FileStorage\Storage\Storage;
 use Net\Bazzline\Component\Locator\FactoryInterface;
 use Net\Bazzline\Component\Locator\LocatorInterface;
 use Net\Bazzline\UniqueNumberRepository\Application\Service\ApplicationLocator;
 
 /**
- * Class AbstractRepositoryFactory
+ * Class AbstractStorageFactory
  * @package Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage
  */
-abstract class AbstractRepositoryFactory implements FactoryInterface
+abstract class AbstractStorageFactory implements FactoryInterface
 {
     /** @var ApplicationLocator */
     private $locator;
@@ -31,13 +31,13 @@ abstract class AbstractRepositoryFactory implements FactoryInterface
     }
 
     /**
-     * @return mixed|Repository
+     * @return mixed|Storage
      */
     public function create()
     {
         $locator    = $this->locator;
 
-        $factory = $locator->getRepositoryFactory();
+        $factory = $locator->getStorageFactory();
 
         $repository = $factory->create();
         $repository->injectPath('data/' . $this->getRepositoryName());

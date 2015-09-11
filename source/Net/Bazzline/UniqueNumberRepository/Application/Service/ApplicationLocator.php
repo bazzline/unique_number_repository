@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Net\Bazzline\Component\Locator
- * @since 2015-09-10
+ * @since 2015-09-11
  */
 
 namespace Net\Bazzline\UniqueNumberRepository\Application\Service;
@@ -26,22 +26,22 @@ class ApplicationLocator implements \Net\Bazzline\Component\Locator\LocatorInter
     private $sharedInstancePool = array();
 
     /**
-     * @return \Net\Bazzline\Component\Database\FileStorage\RepositoryFactory
+     * @return \Net\Bazzline\Component\Database\FileStorage\Storage\StorageFactory
      */
-    public function getRepositoryFactory()
+    public function getStorageFactory()
     {
-        return $this->fetchFromSharedInstancePool('\Net\Bazzline\Component\Database\FileStorage\RepositoryFactory');
+        return $this->fetchFromSharedInstancePool('\Net\Bazzline\Component\Database\FileStorage\Storage\StorageFactory');
     }
 
     /**
-     * @return \Net\Bazzline\Component\Database\FileStorage\Repository
+     * @return \Net\Bazzline\Component\Database\FileStorage\Storage\Storage
      */
-    public function getRepositoryRepository()
+    public function getRepositoryStorage()
     {
-        $className = '\Net\Bazzline\Component\Database\FileStorage\Repository';
+        $className = '\Net\Bazzline\Component\Database\FileStorage\Storage\Storage';
 
         if ($this->isNotInSharedInstancePool($className)) {
-            $factoryClassName = '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\RepositoryRepositoryFactory';
+            $factoryClassName = '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\RepositoryStorageFactory';
             $factory = $this->fetchFromFactoryInstancePool($factoryClassName);
             
             $this->addToSharedInstancePool($className, $factory->create());
@@ -51,14 +51,14 @@ class ApplicationLocator implements \Net\Bazzline\Component\Locator\LocatorInter
     }
 
     /**
-     * @return \Net\Bazzline\Component\Database\FileStorage\Repository
+     * @return \Net\Bazzline\Component\Database\FileStorage\Storage\Storage
      */
-    public function getUniqueNumberRepository()
+    public function getUniqueNumberStorage()
     {
-        $className = '\Net\Bazzline\Component\Database\FileStorage\Repository';
+        $className = '\Net\Bazzline\Component\Database\FileStorage\Storage\Storage';
 
         if ($this->isNotInSharedInstancePool($className)) {
-            $factoryClassName = '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\UniqueNumberRepositoryFactory';
+            $factoryClassName = '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\UniqueNumberStorageFactory';
             $factory = $this->fetchFromFactoryInstancePool($factoryClassName);
             
             $this->addToSharedInstancePool($className, $factory->create());
