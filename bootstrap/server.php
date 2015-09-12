@@ -10,10 +10,8 @@ use Net\Bazzline\UniqueNumberRepository\Application\Service\ApplicationLocator;
 use Net\Bazzline\UniqueNumberRepository\Domain\Model\RepositoryRequest;
 use Net\Bazzline\UniqueNumberRepository\Domain\Model\UniqueNumberRequest;
 use Silex\Application;
-use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Constraints;
 
 const VERSION = '1.0.0';
 
@@ -22,8 +20,6 @@ require_once __DIR__ . '/../configuration/server.local.php';
 //begin of dependencies
 $application    = new Application();
 $locator        = new ApplicationLocator();
-
-$application->register(new ValidatorServiceProvider());
 //end of dependencies
 
 //begin of overriding default functionality
