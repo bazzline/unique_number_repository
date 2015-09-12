@@ -1,0 +1,15 @@
+#!/bin/env php
+<?php
+/**
+ * @author stev leibelt <artodeto@bazzline.net>
+ * @since 2015-09-12
+ */
+
+$host       = '0.0.0.0:8080';
+$path       = __DIR__ .'/../client/check-version';
+$command    = $path . ' "' . $host . '"';
+
+echo date('Y-m-d H:i:s') . ': doing something before calling the command "check version"' . PHP_EOL;
+echo date('Y-m-d H:i:s') . ': calling the command "check version"' . PHP_EOL;
+passthru($command);
+echo date('Y-m-d H:i:s') . ': doing something after calling the command "check version"' . PHP_EOL;

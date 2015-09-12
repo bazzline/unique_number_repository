@@ -1,7 +1,7 @@
 #!/bin/env php
 <?php
 
-require_once __DIR__ . '/../configuration/cli.php';
+require_once __DIR__ . '/../bootstrap/client.php';
 
 $usage = 'usage: ' . PHP_EOL .
     '    ' . basename(__FILE__) . ' <host> <repository name> <number>' . PHP_EOL;
@@ -16,8 +16,8 @@ execute(function () use ($authorization, $baseUrl, $command, $values) {
     throwExceptionIfValueIsInvalid($repositoryName, 'repository name');
     throwExceptionIfValueIsInvalid($number, 'number');
 
-    $url                        = $baseUrl . '/' . $repositoryName . '/' . $number;
-    $lines                      = $command->get($host, $url);
+    $url    = $baseUrl . '/' . $repositoryName . '/' . $number;
+    $lines  = $command->delete($host, $url);
 
     foreach ($lines as $line) {
         echo $line . PHP_EOL;

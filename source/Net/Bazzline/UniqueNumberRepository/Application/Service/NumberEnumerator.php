@@ -5,21 +5,20 @@
  */
 namespace Net\Bazzline\UniqueNumberRepository\Application\Service;
 
-use DateTime;
-use Net\Bazzline\Component\Database\FileStorage\Storage\Storage;
 use Net\Bazzline\UniqueNumberRepository\Domain\Model\UniqueNumberRequest;
+use Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\UniqueNumberStorage;
 
 class NumberEnumerator
 {
     /**
-     * @var Storage
+     * @var UniqueNumberStorage
      */
     private $storage;
 
     /**
-     * @param Storage $storage
+     * @param UniqueNumberStorage $storage
      */
-    public function __construct(Storage $storage)
+    public function __construct(UniqueNumberStorage $storage)
     {
         $this->storage = $storage;
     }
@@ -30,35 +29,81 @@ class NumberEnumerator
      */
     public function increment($repositoryName)
     {
-        $currentMaximum = 0;
+        //begin of dependencies
         $storage        = $this->storage;
-        $storage->filterBy('repository_name', $repositoryName);
-        $collection     = $storage->readMany();
+        //end of dependencies
 
-        foreach ($collection as $data) {
-            //@todo replace by injected hydrator
-            $request                = $this->hydrate($data);
-            $requestHasHigherNumber = ($request->number() > $currentMaximum);
+        //begin of process
+        $collection     = $this->fetchCollection($storage, $repositoryName);
+        $numbers        = $this->fetchNumbersFromCollection($collection);
+        $orderedNumbers = $this->orderNumbers($numbers);
+        $freeNumber     = $this->calculateFreeNumber($orderedNumbers);
 
-            if ($requestHasHigherNumber) {
-                $currentMaximum = $request->number();
+        return $freeNumber;
+        //end of process
+    }
+
+    /**
+     * @param UniqueNumberStorage $storage
+     * @param string $name
+     * @return array|\Net\Bazzline\UniqueNumberRepository\Domain\Model\UniqueNumberRequest[]
+     */
+    private function fetchCollection(UniqueNumberStorage $storage, $name)
+    {
+        $storage->filterByRepositoryName($name);
+
+        return $storage->readMany();
+    }
+
+    /**
+     * @param array $collection
+     * @return array
+     */
+    private function fetchNumbersFromCollection(array $collection)
+    {
+        $numbers = array();
+
+        foreach ($collection as $request) {
+            /** @var UniqueNumberRequest $request */
+            $numbers[] = $request->number();
+        }
+
+        return $numbers;
+    }
+
+    /**
+     * @param array $numbers
+     * @return array
+     */
+    private function orderNumbers(array $numbers)
+    {
+        natsort($numbers);
+
+        return $numbers;
+    }
+
+    /**
+     * @param array $numbers
+     * @return int
+     */
+    private function calculateFreeNumber(array $numbers)
+    {
+        $currentMaximum = 0;
+
+        foreach ($numbers as $number) {
+            $numberIsHigherThanCurrentNumber = ($number > $currentMaximum);
+
+            if ($numberIsHigherThanCurrentNumber) {
+                $numberIsHigherThanCurrentNumberPlusOne = ($number > ($currentMaximum + 1));
+
+                if ($numberIsHigherThanCurrentNumberPlusOne) {
+                    break;
+                }
+
+                $currentMaximum = $number;
             }
         }
 
         return (++$currentMaximum);
-    }
-
-    /**
-     * @param array $data
-     * @return UniqueNumberRequest
-     */
-    private function hydrate(array $data)
-    {
-        return new UniqueNumberRequest(
-            $data['applicant_name'],
-            $data['number'],
-            new DateTime(date('Y-m-d H:i:s', $data['occurred_on'])),
-            $data['repository_name']
-        );
     }
 }

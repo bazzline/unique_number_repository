@@ -1,5 +1,6 @@
 .idea
-configuration/cli.local.php
+configuration/client.local.php
+configuration/server.local.php
 data
 vendor
 composer.lock

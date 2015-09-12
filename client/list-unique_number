@@ -1,7 +1,7 @@
 #!/bin/env php
 <?php
 
-require_once __DIR__ . '/../configuration/cli.php';
+require_once __DIR__ . '/../bootstrap/client.php';
 
 $usage = 'usage: ' . PHP_EOL .
     '    ' . basename(__FILE__) . ' <host> <repository name>' . PHP_EOL;

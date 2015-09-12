@@ -1,7 +1,7 @@
 #!/bin/env php
 <?php
 
-require_once __DIR__ . '/../configuration/cli.php';
+require_once __DIR__ . '/../bootstrap/client.php';
 
 $usage = 'usage: ' . PHP_EOL .
     '    ' . basename(__FILE__) . ' <host> <applicant name> <repository name>' . PHP_EOL;
@@ -17,10 +17,10 @@ execute(function () use ($authorization, $baseUrl, $command, $values) {
     throwExceptionIfValueIsInvalid($repositoryName, 'repository name');
 
     $data                       = array(
-        'applicant_name' => $applicantName
+        'applicant_name'    => $applicantName,
+        'repository_name'    => $repositoryName
     );
-    $url                        = $baseUrl . '/' . $repositoryName;
-    $lines                      = $command->post($host, $url, $data);
+    $lines                      = $command->post($host, $baseUrl, $data);
 
     foreach ($lines as $line) {
         echo $line . PHP_EOL;

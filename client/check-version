@@ -1,7 +1,7 @@
 #!/bin/env php
 <?php
 
-require_once __DIR__ . '/../configuration/cli.php';
+require_once __DIR__ . '/../bootstrap/client.php';
 
 const SUPPORTED_VERSION = '1.0.0';
 
@@ -16,7 +16,7 @@ execute(function () use ($authorization, $baseUrl, $command, $values) {
 
     throwExceptionIfValueIsInvalid($host, 'host');
 
-    $url                = $baseUrl . '/version';
+    $url                = '/version';
     $lines              = $command->get($host, $url);
     $versionAvailable   = (count($lines) > 0);
 

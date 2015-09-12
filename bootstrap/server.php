@@ -15,8 +15,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints;
 
-const VERSION   = '1.0.0';
-const TOKEN     = '13f0d9c1d3643a86f0daa257be0fb1efe5b9e5a7';   //sha1('unique_number_repository')
+const VERSION = '1.0.0';
+
+require_once __DIR__ . '/../configuration/server.local.php';
 
 //begin of dependencies
 $application    = new Application();
@@ -67,38 +68,53 @@ $application->error(function (Exception $exception, $code) use ($application) {
 //end of overriding default functionality
 
 //begin of routing
-$application->delete('/unique-number-repository/{name}', function(Request $request) use ($application, $locator) {
+$application->get('/version', function (Application $application) {
+    //begin of process
+    return $application->json(VERSION);
+    //end of process
+});
+
+$application->delete('/unique-number-repository/{name}', function (Application $application, Request $request) use ($locator) {
     //begin of runtime parameters
     $name = urldecode($request->get('name'));
     //end of runtime parameters
 
     //begin of dependencies
-    $storage = $locator->getRepositoryStorage();
+    $repositoryStorage      = $locator->getRepositoryStorage();
+    $uniqueNumberStorage    = $locator->getUniqueNumberStorage();
     //end of dependencies
 
     //begin of validation
-    $storage->resetRuntimeProperties();
-    $storage->filterBy('name', $name);
-    $repositoryNameDoesNotExist = (!$storage->has());
+    $repositoryStorage->resetRuntimeProperties();
+    $repositoryStorage->filterBy('name', $name);
+    $repositoryNameDoesNotExist = (!$repositoryStorage->has());
 
     if ($repositoryNameDoesNotExist) {
         $application->abort(404);
     }
-    $storage->resetRuntimeProperties();
+    $repositoryStorage->resetRuntimeProperties();
     //end of validation
 
     //begin of process
-    $storage->filterBy('name', $name);
-    $result = $storage->delete();
+    $repositoryStorage->filterBy('name', $name);
+    $result = $repositoryStorage->delete();
 
-    if ($result !== true) {
+    if ($result === true) {
+        $uniqueNumberStorage->resetRuntimeProperties();
+        $uniqueNumberStorage->filterByRepositoryName($name);
+        $result = $uniqueNumberStorage->delete();
+
+        if ($result !== true) {
+            $application->abort(503);
+        }
+    } else {
         $application->abort(503);
     }
 
     return $application->json('ok');
     //end of process
 });
-$application->get('/unique-number-repository', function() use ($application, $locator) {
+$application->get('/unique-number-repository', function (Application $application) use ($locator) {
     //begin of dependencies
     $storage    = $locator->getRepositoryStorage();
     //end of dependencies
@@ -116,7 +132,7 @@ $application->get('/unique-number-repository', function() use ($application, $lo
     return $application->json($content);
     //end of process
 });
-$application->post('/unique-number-repository', function(Request $request) use ($application, $locator) {
+$application->post('/unique-number-repository', function (Application $application, Request $request) use ($locator) {
     //begin of runtime parameters
     $name   = urldecode($request->get('repository_name'));
     $user   = urldecode($request->get('applicant_name'));
@@ -145,9 +161,9 @@ $application->post('/unique-number-repository', function(Request $request) use (
     //end of process
 });
 
-$application->post('/unique-number-repository/{name}', function(Request $request) use ($application, $locator) {
+$application->post('/unique-number-repository/{name}', function (Application $application, Request $request, $name) use ($locator) {
     //begin of runtime parameters
-    $name   = urldecode($request->attributes->get('name'));
+    $name   = urldecode($name);
     $user   = urldecode($request->get('applicant_name'));
     //end of runtime parameters
 
@@ -159,10 +175,10 @@ $application->post('/unique-number-repository/{name}', function(Request $request
 
     //begin of validation
     $repositoryStorage->filterByName($name);
-    $repositoryNameExistsAlready = $repositoryStorage->has();
+    $repositoryNameDoesNotExist = (!$repositoryStorage->has());
 
-    if ($repositoryNameExistsAlready) {
-        $application->abort(400, 'repository name exists already');
+    if ($repositoryNameDoesNotExist) {
+        $application->abort(400, 'repository name does not exist');
     }
     $repositoryStorage->resetRuntimeProperties();
     //end of validation
@@ -174,10 +190,10 @@ $application->post('/unique-number-repository/{name}', function(Request $request
     return $application->json(array('number' => $uniqueNumberRequest->number()));
     //end of process
 });
-$application->delete('/unique-number-repository/{name}/{number}', function(Request $request) use ($application, $locator) {
+$application->delete('/unique-number-repository/{name}/{number}', function (Application $application, $name, $number) use ($locator) {
     //begin of runtime parameters
-    $name   = urldecode($request->attributes->get('name', null));
-    $number = (int) $request->attributes->get('number', null);
+    $name   = urldecode($name);
+    $number = (int) $number;
     //end of runtime parameters
 
     //begin of dependencies
@@ -207,9 +223,9 @@ $application->delete('/unique-number-repository/{name}/{number}', function(Reque
     return $application->json('ok');
     //end of process
 });
-$application->get('/unique-number-repository/{name}', function(Request $request) use ($application, $locator)  {
+$application->get('/unique-number-repository/{name}', function (Application $application, $name) use ($locator)  {
     //begin of runtime parameters
-    $name   = urldecode($request->get('name', null));
+    $name   = urldecode($name);
     //end of runtime parameters
 
     //begin of dependencies
@@ -240,12 +256,6 @@ $application->get('/unique-number-repository/{name}', function(Request $request)
     }
 
     return $application->json($content);
-    //end of process
-});
-
-$application->get('/version', function() use ($application) {
-    //begin of process
-    return $application->json(VERSION);
     //end of process
 });
 //end of routing

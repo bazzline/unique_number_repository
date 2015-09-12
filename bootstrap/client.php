@@ -10,16 +10,12 @@ use Net\Bazzline\Component\Cli\Arguments\Arguments;
 use Net\Bazzline\Component\CommandCollection\Http\Curl;
 
 //begin of dependencies
-$arguments                          = new Arguments($argv);
-$authorization                      = '13f0d9c1d3643a86f0daa257be0fb1efe5b9e5a7';
-$baseUrl                            = '/unique-number-repository';
-$command                            = new Curl();
-$pathToOptionalConfigurationFile    = __DIR__ . '/cli.local.php';
-$values                             = $arguments->getValues();
+$arguments  = new Arguments($argv);
+$baseUrl    = '/unique-number-repository';
+$command    = new Curl();
+$values     = $arguments->getValues();
 
-if (is_file($pathToOptionalConfigurationFile)) {
-    require_once $pathToOptionalConfigurationFile;
-}
+require_once __DIR__ . '/../configuration/client.local.php';
 //end of dependencies
 
 //begin of configuration
