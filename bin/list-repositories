@@ -1,37 +1,22 @@
 #!/bin/env php
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../configuration/cli.php';
 
-use Net\Bazzline\Component\Cli\Arguments\Arguments;
-use Net\Bazzline\Component\Command\Command;
+$usage = 'usage: ' . PHP_EOL .
+    '    ' . basename(__FILE__) . ' <host>' . PHP_EOL;
 
-$arguments = new Arguments($argv);
+execute(function () use ($authorization, $baseUrl, $command, $values) {
 
-try {
-    $values                         = $arguments->getValues();
-    $numberOfValues                 = count($values);
-    $invalidNumberOfValuesProvided  = ($numberOfValues < 1);
+    throwExceptionIfInvalidNumberOfValuesWasProvided($values, 1);
 
-    if ($invalidNumberOfValuesProvided) {
-        $message = 'invalid number of arguments supplied';
+    list($host) = extractValues($values);
 
-        throw new RuntimeException($message);
-    }
+    throwExceptionIfValueIsInvalid($host, 'host');
 
-    $host                           = (string) $values[0];
-    $invalidHostProvided            = (strlen($host) < 1);
-
-    if ($invalidHostProvided) {
-        $message = 'invalid host supplied';
-
-        throw new RuntimeException($message);
-    }
-
-    $command = new Command();
-    //@see: http://www.computerhope.com/unix/curl.htm
-    $lines                  = $command('/bin/env curl -s --ssl-no-revoke -H "Accept: application/json" -X GET ' . $host . '/unique-number-repository');
-    $repositoriesAvailable  = (count($lines) > 0);
+    $url                        = $baseUrl;
+    $lines                      = $command->get($host, $url);
+    $repositoriesAvailable  = ((is_array($lines) && (count($lines) > 0)));
 
     if ($repositoriesAvailable) {
         foreach ($lines as $line) {
@@ -44,13 +29,4 @@ try {
     } else {
         echo 'no repository available' . PHP_EOL;
     }
-} catch (Exception $exception) {
-    $usage = 'usage: ' . PHP_EOL .
-        '    ' . basename(__FILE__) . ' <host>' . PHP_EOL;
-
-    echo 'An error occurred' . PHP_EOL;
-    echo $exception->getMessage() . PHP_EOL;
-    echo PHP_EOL;
-    echo $usage;
-    exit(1);
-}
+}, $usage);

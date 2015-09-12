@@ -10,28 +10,55 @@ use Net\Bazzline\UniqueNumberRepository\Application\Service\ApplicationLocator;
 use Net\Bazzline\UniqueNumberRepository\Domain\Model\RepositoryRequest;
 use Net\Bazzline\UniqueNumberRepository\Domain\Model\UniqueNumberRequest;
 use Silex\Application;
+use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints;
 
-const VERSION = '1.0.0';
+const VERSION   = '1.0.0';
+const TOKEN     = '13f0d9c1d3643a86f0daa257be0fb1efe5b9e5a7';   //sha1('unique_number_repository')
 
+//begin of dependencies
 $application    = new Application();
 $locator        = new ApplicationLocator();
 
+$application->register(new ValidatorServiceProvider());
+//end of dependencies
+
 //begin of overriding default functionality
+$application->before(function (Request $request) use ($application) {
+    //begin of only allow requests with valid authorization token
+    $isNotAuthorized = ($request->headers->get('authorization') !== TOKEN);
+
+    if ($isNotAuthorized) {
+        $application->abort(403);
+    }
+    //end of only allow requests with valid authorization token
+
+    //begin of decoding json request data
+    $isJsonRequest = (0 === strpos($request->headers->get('Content-Type'), 'application/json'));
+
+    if ($isJsonRequest) {
+        $data = json_decode($request->getContent(), true);
+        $request->request->replace(is_array($data) ? $data : array());
+    }
+    //end of decoding json request data
+});
+
 $application->error(function (Exception $exception, $code) use ($application) {
     switch ($code) {
         case 404:
             $message = 'not found';
+            break;
+        case 403:
+            $message = 'unauthorized';
             break;
         case 400:
             $message = $exception->getMessage();
             break;
         default:
             $message = 'the server made a boh boh:' . PHP_EOL .
-                $exception->getMessage() . PHP_EOL .
-                PHP_EOL .
-                $exception->getTraceAsString();
+                $exception->getMessage() . PHP_EOL;
             break;
     }
 
@@ -41,110 +68,185 @@ $application->error(function (Exception $exception, $code) use ($application) {
 
 //begin of routing
 $application->delete('/unique-number-repository/{name}', function(Request $request) use ($application, $locator) {
-    //@todo data validation (repository_name, applicant_name)
-    //@todo check if repository name does not exist already
+    //begin of runtime parameters
+    $name = urldecode($request->get('name'));
+    //end of runtime parameters
 
-    $repository = $locator->getRepositoryStorage();
-    $repository->filterBy('name', urldecode($request->get('name')));
-    $result = $repository->delete();
+    //begin of dependencies
+    $storage = $locator->getRepositoryStorage();
+    //end of dependencies
+
+    //begin of validation
+    $storage->resetRuntimeProperties();
+    $storage->filterBy('name', $name);
+    $repositoryNameDoesNotExist = (!$storage->has());
+
+    if ($repositoryNameDoesNotExist) {
+        $application->abort(404);
+    }
+    $storage->resetRuntimeProperties();
+    //end of validation
+
+    //begin of process
+    $storage->filterBy('name', $name);
+    $result = $storage->delete();
 
     if ($result !== true) {
-        $application->abort(404);
+        $application->abort(503);
     }
 
     return $application->json('ok');
+    //end of process
 });
 $application->get('/unique-number-repository', function() use ($application, $locator) {
-    $repository = $locator->getRepositoryStorage();
-    $collection = $repository->readMany();
+    //begin of dependencies
+    $storage    = $locator->getRepositoryStorage();
+    //end of dependencies
+
+    //begin of process
+    $collection = $storage->readMany();
     $content    = array();
 
-    foreach ($collection as $data) {
+    foreach ($collection as $repositoryRequest) {
         $content[] = array(
-            'name' => $data['name'],
+            'name' => $repositoryRequest->name()
         );
     }
 
     return $application->json($content);
+    //end of process
 });
 $application->post('/unique-number-repository', function(Request $request) use ($application, $locator) {
-    $name   = urldecode($request->get('name', null));
-    $user   = urldecode($request->get('applicant_name', null));
+    //begin of runtime parameters
+    $name   = urldecode($request->get('repository_name'));
+    $user   = urldecode($request->get('applicant_name'));
+    //end of runtime parameters
 
-    //@todo data validation (repository_name, applicant_name)
-    //@todo check if repository name does not exist already
+    //begin of dependencies
     $repositoryRequest  = new RepositoryRequest($user, $name, new DateTime());
+    $storage            = $locator->getRepositoryStorage();
+    //end of dependencies
 
-    $repository = $locator->getRepositoryStorage();
-    $id         = $repository->create(
-        array(
-            'applicant_name'    => $repositoryRequest->applicantName(),
-            'name'              => $repositoryRequest->name(),
-            'occurred_on'       => $repositoryRequest->occurredOn()->getTimestamp()
-        )
-    );
+    //begin of validation
+    $storage->resetRuntimeProperties();
+    $storage->filterByName($repositoryRequest->name());
+    $repositoryNameExistsAlready = $storage->has();
 
-    return $application->json(array('id' => $id));
+    if ($repositoryNameExistsAlready) {
+        $application->abort(400, 'repository name exists already');
+    }
+    $storage->resetRuntimeProperties();
+    //end of validation
+
+    //begin of process
+    $createdId = $storage->createFrom($repositoryRequest);
+
+    return $application->json(array('id' => $createdId));
+    //end of process
 });
 
 $application->post('/unique-number-repository/{name}', function(Request $request) use ($application, $locator) {
+    //begin of runtime parameters
     $name   = urldecode($request->attributes->get('name'));
     $user   = urldecode($request->get('applicant_name'));
+    //end of runtime parameters
 
-    //@todo data validation (repository_name, applicant_name)
-    //@todo check if repository name does not exist already
+    //begin of dependencies
     $numberEnumerator       = $locator->getUniqueNumberEnumerator();
-    $repository             = $locator->getUniqueNumberStorage();
-    $uniqueNumberRequest    = new UniqueNumberRequest($user, $numberEnumerator->increment($name), new DateTime(), $name);
+    $repositoryStorage      = $locator->getRepositoryStorage();
+    $uniqueNumberStorage    = $locator->getUniqueNumberStorage();
+    //end of dependencies
 
+    //begin of validation
+    $repositoryStorage->filterByName($name);
+    $repositoryNameExistsAlready = $repositoryStorage->has();
 
-    $repository->create(
-        array(
-            'applicant_name'    => $uniqueNumberRequest->applicantName(),
-            'number'            => $uniqueNumberRequest->number(),
-            'occurred_on'       => $uniqueNumberRequest->occurredOn()->getTimestamp(),
-            'repository_name'   => $uniqueNumberRequest->repositoryName()
-        )
-    );
+    if ($repositoryNameExistsAlready) {
+        $application->abort(400, 'repository name exists already');
+    }
+    $repositoryStorage->resetRuntimeProperties();
+    //end of validation
+
+    //begin of process
+    $uniqueNumberRequest = new UniqueNumberRequest($user, $numberEnumerator->increment($name), new DateTime(), $name);
+    $uniqueNumberStorage->createFrom($uniqueNumberRequest);
 
     return $application->json(array('number' => $uniqueNumberRequest->number()));
+    //end of process
 });
 $application->delete('/unique-number-repository/{name}/{number}', function(Request $request) use ($application, $locator) {
-    //@todo data validation (repository_name, applicant_name)
-    //@todo check if repository name does not exist already
+    //begin of runtime parameters
     $name   = urldecode($request->attributes->get('name', null));
-    $number = $request->attributes->get('number', null);
+    $number = (int) $request->attributes->get('number', null);
+    //end of runtime parameters
 
-    $repository = $locator->getUniqueNumberStorage();
-    $repository->filterBy('repository_name', $name);
-    $repository->filterBy('number', (int) $number);
-    $result = $repository->delete();
+    //begin of dependencies
+    $storage = $locator->getUniqueNumberStorage();
+    //end of dependencies
+
+    //begin of validation
+    $storage->filterByNumber($number);
+    $storage->filterByRepositoryName($name);
+    $numberDoesNotExistInThisRepository = (!$storage->has());
+
+    if ($numberDoesNotExistInThisRepository) {
+        $application->abort(404, 'number does not exist in this repository');
+    }
+    $storage->resetRuntimeProperties();
+    //end of validation
+
+    //begin of process
+    $storage->filterByNumber($number);
+    $storage->filterByRepositoryName($name);
+    $result = $storage->delete();
 
     if ($result !== true) {
-        $application->abort(404);
+        $application->abort(503);
     }
 
     return $application->json('ok');
+    //end of process
 });
 $application->get('/unique-number-repository/{name}', function(Request $request) use ($application, $locator)  {
-    $name       = urldecode($request->get('name', null));
-    $repository = $locator->getUniqueNumberStorage();
+    //begin of runtime parameters
+    $name   = urldecode($request->get('name', null));
+    //end of runtime parameters
 
-    $repository->filterBy('repository_name', $name);
-    $collection = $repository->readMany();
+    //begin of dependencies
+    $numberStorage      = $locator->getUniqueNumberStorage();
+    $repositoryStorage  = $locator->getRepositoryStorage();
+    //end of dependencies
+
+    //begin of validation
+    $repositoryStorage->filterByName($name);
+    $repositoryDoesNotExist = (!$repositoryStorage->has());
+
+    if ($repositoryDoesNotExist) {
+        $application->abort(404, 'repository does not exist');
+    }
+    $repositoryStorage->resetRuntimeProperties();
+    //end of validation
+
+    //begin of process
+    $numberStorage->resetRuntimeProperties();
+    $numberStorage->filterBy('repository_name', $name);
+    $collection = $numberStorage->readMany();
     $content    = array();
 
-    foreach ($collection as $data) {
+    foreach ($collection as $uniqueNumberRequest) {
         $content[] = array(
-            'number'    => $data['number']
+            'number'    => $uniqueNumberRequest->number()
         );
     }
 
     return $application->json($content);
+    //end of process
 });
 
 $application->get('/version', function() use ($application) {
+    //begin of process
     return $application->json(VERSION);
+    //end of process
 });
 //end of routing
 

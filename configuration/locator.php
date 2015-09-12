@@ -20,14 +20,14 @@ return array(
             'class_name'    => '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\RepositoryStorageFactory',
             'is_factory'    => true,
             'is_shared'     => true,
-            'return_value'  => '\Net\Bazzline\Component\Database\FileStorage\Storage\Storage'
+            'return_value'  => '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\RepositoryStorage'
         ),
         array(
             'alias'         => 'UniqueNumberStorage',
             'class_name'    => '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\UniqueNumberStorageFactory',
             'is_factory'    => true,
             'is_shared'     => true,
-            'return_value'  => '\Net\Bazzline\Component\Database\FileStorage\Storage\Storage'
+            'return_value'  => '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\UniqueNumberStorage'
         ),
         array(
             'alias'         => 'UniqueNumberEnumerator',

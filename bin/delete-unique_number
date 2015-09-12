@@ -1,64 +1,25 @@
 #!/bin/env php
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../configuration/cli.php';
 
-use Net\Bazzline\Component\Cli\Arguments\Arguments;
-use Net\Bazzline\Component\Command\Command;
+$usage = 'usage: ' . PHP_EOL .
+    '    ' . basename(__FILE__) . ' <host> <repository name> <number>' . PHP_EOL;
 
-$arguments = new Arguments($argv);
+execute(function () use ($authorization, $baseUrl, $command, $values) {
 
-try {
-    $values                         = $arguments->getValues();
-    $numberOfValues                 = count($values);
-    $invalidNumberOfValuesProvided  = ($numberOfValues < 3);
+    throwExceptionIfInvalidNumberOfValuesWasProvided($values, 3);
 
-    if ($invalidNumberOfValuesProvided) {
-        $message = 'invalid number of arguments supplied';
+    list($host, $repositoryName, $number) = extractValues($values);
 
-        throw new RuntimeException($message);
-    }
+    throwExceptionIfValueIsInvalid($host, 'host');
+    throwExceptionIfValueIsInvalid($repositoryName, 'repository name');
+    throwExceptionIfValueIsInvalid($number, 'number');
 
-    $host                           = (string) $values[0];
-    $invalidHostProvided            = (strlen($host) < 1);
-    $repositoryName                 = (string) $values[1];
-    $invalidRepositoryNameProvided  = (strlen($repositoryName) < 1);
-    $number                         = (int) $values[2];
-    $invalidNumberProvided          = ($number < 0);
-
-    if ($invalidHostProvided) {
-        $message = 'invalid host supplied';
-
-        throw new RuntimeException($message);
-    }
-
-    if ($invalidRepositoryNameProvided) {
-        $message = 'invalid repository name supplied';
-
-        throw new RuntimeException($message);
-    }
-
-    if ($invalidNumberProvided) {
-        $message = 'invalid number supplied';
-
-        throw new RuntimeException($message);
-    }
-
-    $command                    = new Command();
-    $urlEncodedRepositoryName   = urlencode($repositoryName);
-    //@see: http://blog.scottlowe.org/2014/02/19/using-curl-to-interact-with-a-restful-api/
-    $lines = $command('/bin/env curl -s --ssl-no-revoke -H "Accept: application/json" -X DELETE ' . $host . '/unique-number-repository/' . $urlEncodedRepositoryName . '/' . $number);
+    $url                        = $baseUrl . '/' . $repositoryName . '/' . $number;
+    $lines                      = $command->get($host, $url);
 
     foreach ($lines as $line) {
         echo $line . PHP_EOL;
     }
-} catch (Exception $exception) {
-    $usage = 'usage: ' . PHP_EOL .
-        '    ' . basename(__FILE__) . ' <host> <repository name> <number>' . PHP_EOL;
-
-    echo 'An error occurred' . PHP_EOL;
-    echo $exception->getMessage() . PHP_EOL;
-    echo PHP_EOL;
-    echo $usage;
-    exit(1);
-}
+}, $usage);

@@ -12,6 +12,14 @@ namespace Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage;
 class UniqueNumberStorageFactory extends AbstractStorageFactory
 {
     /**
+     * @return UniqueNumberStorage
+     */
+    protected function getStorage()
+    {
+        return new UniqueNumberStorage();
+    }
+
+    /**
      * @return string
      */
     protected function getRepositoryName()

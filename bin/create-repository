@@ -1,63 +1,28 @@
 #!/bin/env php
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../configuration/cli.php';
 
-use Net\Bazzline\Component\Cli\Arguments\Arguments;
-use Net\Bazzline\Component\Command\Command;
+$usage = 'usage: ' . PHP_EOL .
+    '    ' . basename(__FILE__) . ' <host> <applicant name> <repository name>' . PHP_EOL;
 
-$arguments = new Arguments($argv);
+execute(function () use ($authorization, $baseUrl, $command, $values) {
 
-try {
-    $values                         = $arguments->getValues();
-    $numberOfValues                 = count($values);
-    $invalidNumberOfValuesProvided  = ($numberOfValues < 3);
+    throwExceptionIfInvalidNumberOfValuesWasProvided($values, 3);
 
-    if ($invalidNumberOfValuesProvided) {
-        $message = 'invalid number of arguments supplied';
+    list($host, $applicantName, $repositoryName) = extractValues($values);
 
-        throw new RuntimeException($message);
-    }
+    throwExceptionIfValueIsInvalid($host, 'host');
+    throwExceptionIfValueIsInvalid($applicantName, 'applicant name');
+    throwExceptionIfValueIsInvalid($repositoryName, 'repository name');
 
-    $host                           = (string) $values[0];
-    $invalidHostProvided            = (strlen($host) < 1);
-    $applicantName                  = (string) $values[1];
-    $invalidApplicantNameProvided   = (strlen($applicantName) < 1);
-    $name                           = (string) $values[2];
-    $invalidNameProvided            = (strlen($name) < 1);
-
-    if ($invalidHostProvided) {
-        $message = 'invalid host supplied';
-
-        throw new RuntimeException($message);
-    }
-
-    if ($invalidApplicantNameProvided) {
-        $message = 'invalid applicant name supplied';
-
-        throw new RuntimeException($message);
-    }
-
-    if ($invalidNameProvided) {
-        $message = 'invalid name supplied';
-
-        throw new RuntimeException($message);
-    }
-
-    $command = new Command();
-    //@see: http://www.computerhope.com/unix/curl.htm
-    $lines = $command('/bin/env curl -s --ssl-no-revoke -H "Accept: application/json" -X POST -d applicant_name="' . $applicantName . '" -d name="' . $name . '" ' . $host . '/unique-number-repository');
+    $data                       = array(
+        'applicant_name'    => $applicantName,
+        'repository_name'    => $repositoryName
+    );
+    $lines                      = $command->post($host, $baseUrl, $data);
 
     foreach ($lines as $line) {
         echo $line . PHP_EOL;
     }
-} catch (Exception $exception) {
-    $usage = 'usage: ' . PHP_EOL .
-        '    ' . basename(__FILE__) . ' <host> <applicant name> <repository name>' . PHP_EOL;
-
-    echo 'An error occurred' . PHP_EOL;
-    echo $exception->getMessage() . PHP_EOL;
-    echo PHP_EOL;
-    echo $usage;
-    exit(1);
-}
+}, $usage);

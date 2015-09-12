@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Net\Bazzline\Component\Locator
- * @since 2015-09-11
+ * @since 2015-09-12
  */
 
 namespace Net\Bazzline\UniqueNumberRepository\Application\Service;
@@ -34,11 +34,11 @@ class ApplicationLocator implements \Net\Bazzline\Component\Locator\LocatorInter
     }
 
     /**
-     * @return \Net\Bazzline\Component\Database\FileStorage\Storage\Storage
+     * @return \Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\RepositoryStorage
      */
     public function getRepositoryStorage()
     {
-        $className = '\Net\Bazzline\Component\Database\FileStorage\Storage\Storage';
+        $className = '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\RepositoryStorage';
 
         if ($this->isNotInSharedInstancePool($className)) {
             $factoryClassName = '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\RepositoryStorageFactory';
@@ -51,11 +51,11 @@ class ApplicationLocator implements \Net\Bazzline\Component\Locator\LocatorInter
     }
 
     /**
-     * @return \Net\Bazzline\Component\Database\FileStorage\Storage\Storage
+     * @return \Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\UniqueNumberStorage
      */
     public function getUniqueNumberStorage()
     {
-        $className = '\Net\Bazzline\Component\Database\FileStorage\Storage\Storage';
+        $className = '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\UniqueNumberStorage';
 
         if ($this->isNotInSharedInstancePool($className)) {
             $factoryClassName = '\Net\Bazzline\UniqueNumberRepository\Infrastructure\Storage\UniqueNumberStorageFactory';

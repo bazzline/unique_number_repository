@@ -1,65 +1,38 @@
 #!/bin/env php
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../configuration/cli.php';
 
-use Net\Bazzline\Component\Cli\Arguments\Arguments;
-use Net\Bazzline\Component\Command\Command;
+$usage = 'usage: ' . PHP_EOL .
+    '    ' . basename(__FILE__) . ' <host> <repository name>' . PHP_EOL;
 
-$arguments = new Arguments($argv);
+execute(function () use ($authorization, $baseUrl, $command, $values) {
 
-try {
-    $values                         = $arguments->getValues();
-    $numberOfValues                 = count($values);
-    $invalidNumberOfValuesProvided  = ($numberOfValues < 2);
+    throwExceptionIfInvalidNumberOfValuesWasProvided($values, 2);
 
-    if ($invalidNumberOfValuesProvided) {
-        $message = 'invalid number of arguments supplied';
+    list($host, $repositoryName) = extractValues($values);
 
-        throw new RuntimeException($message);
-    }
+    throwExceptionIfValueIsInvalid($host, 'host');
+    throwExceptionIfValueIsInvalid($repositoryName, 'repository name');
 
-    $host                           = (string) $values[0];
-    $invalidHostProvided            = (strlen($host) < 1);
-    $repositoryName                 = (string) $values[1];
-    $invalidRepositoryNameProvided  = (strlen($repositoryName) < 1);
+    $url                        = $baseUrl . '/' . $repositoryName;
+    $lines                      = $command->get($host, $url);
+    $repositoriesAreAvailable   = ((is_array($lines) && (count($lines) > 0)));
 
-    if ($invalidHostProvided) {
-        $message = 'invalid host supplied';
-
-        throw new RuntimeException($message);
-    }
-
-    if ($invalidRepositoryNameProvided) {
-        $message = 'invalid repository name supplied';
-
-        throw new RuntimeException($message);
-    }
-
-    $command                    = new Command();
-    $urlEncodedRepositoryName   = urlencode($repositoryName);
-    //@see: http://www.computerhope.com/unix/curl.htm
-    $lines                  = $command('/bin/env curl -s --ssl-no-revoke -H "Accept: application/json" -X GET ' . $host . '/unique-number-repository/' . $urlEncodedRepositoryName);
-    $repositoriesAvailable  = (count($lines) > 0);
-
-    if ($repositoriesAvailable) {
+    if ($repositoriesAreAvailable) {
         foreach ($lines as $line) {
             $data = json_decode($line);
             echo '[number]' . PHP_EOL;
-            foreach ($data as $uniqueNumber) {
-                echo $uniqueNumber->number . PHP_EOL;
+            $uniqueNumbersAreAvailable  = ((is_array($data) && (count($data) > 0)));
+            if ($uniqueNumbersAreAvailable) {
+                foreach ($data as $uniqueNumber) {
+                    echo $uniqueNumber->number . PHP_EOL;
+                }
+            } else {
+                echo 'unexpected response: ' . var_export($lines, true);
             }
         }
     } else {
         echo 'no repository available' . PHP_EOL;
     }
-} catch (Exception $exception) {
-    $usage = 'usage: ' . PHP_EOL .
-        '    ' . basename(__FILE__) . ' <host> <repository name>' . PHP_EOL;
-
-    echo 'An error occurred' . PHP_EOL;
-    echo $exception->getMessage() . PHP_EOL;
-    echo PHP_EOL;
-    echo $usage;
-    exit(1);
-}
+}, $usage);
