@@ -65,5 +65,6 @@ To easy things up, this project will create a rest based webservice as backend a
     * @todo
         * multiple storage (databases) are supported (right now, [file storage](https://github.com/bazzline/php_component_database_file_storage) is supported)
     * fix broken links
+    * removed unused dependencie
 * [0.9.0](https://github.com/bazzline/unique_number_repository/tree/0.9.0) - released at 12.09.2015
     * silix based server/backend
