@@ -18,12 +18,12 @@ To easy things up, this project will create a rest based webservice as backend a
 ## [Command Line Based Frontend (Client)](https://github.com/bazzline/unique_number_repository/blob/master/client)
 
 * commands
-    * [create-repository](https://github.com/bazzline/unique_number_repository/blob/master/client/create-repository] <host> <applicant name> <repository name>
-    * [list-repositories](https://github.com/bazzline/unique_number_repository/blob/master/client/list-repositories] <host>
-    * [delete-repository](https://github.com/bazzline/unique_number_repository/blob/master/client/delete-repository] <host> <repository name>
-    * [create-unique_number](https://github.com/bazzline/unique_number_repository/blob/master/client/create-unique_number] <host> <applicant name> <repository name>
-    * [list-unique_number](https://github.com/bazzline/unique_number_repository/blob/master/client/list-unique_number] <host> <repository name>
-    * [delete-unique_number](https://github.com/bazzline/unique_number_repository/blob/master/client/delete-unique_number] <host> <repository name> <number>
+    * [create-repository](https://github.com/bazzline/unique_number_repository/blob/master/client/create-repository) <host> <applicant name> <repository name>
+    * [list-repositories](https://github.com/bazzline/unique_number_repository/blob/master/client/list-repositories) <host>
+    * [delete-repository](https://github.com/bazzline/unique_number_repository/blob/master/client/delete-repository) <host> <repository name>
+    * [create-unique_number](https://github.com/bazzline/unique_number_repository/blob/master/client/create-unique_number) <host> <applicant name> <repository name>
+    * [list-unique_number](https://github.com/bazzline/unique_number_repository/blob/master/client/list-unique_number) <host> <repository name>
+    * [delete-unique_number](https://github.com/bazzline/unique_number_repository/blob/master/client/delete-unique_number) <host> <repository name> <number>
 * you can use this as base to implement your own logic 
     * a [basic example](https://github.com/bazzline/unique_number_repository/blob/master/example/basic_example) with "pre_execution_hook" and "post_execution_hook" will be shipped
 
@@ -64,5 +64,6 @@ To easy things up, this project will create a rest based webservice as backend a
 * upcomming
     * @todo
         * multiple storage (databases) are supported (right now, [file storage](https://github.com/bazzline/php_component_database_file_storage) is supported)
+    * fix broken links
 * [0.9.0](https://github.com/bazzline/unique_number_repository/tree/0.9.0) - released at 12.09.2015
     * silix based server/backend
