@@ -32,3 +32,4 @@ To easy things up, this project will create a rest based webservice as backend a
 
 * add hydrator and dehydrator
 * remove hard dependency from "Infrastructure\Storage" (add layer)
+* read [designing rest api with silex](https://speakerdeck.com/hhamon/designing-rest-api-with-silex)

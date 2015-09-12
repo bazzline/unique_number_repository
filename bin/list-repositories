@@ -30,7 +30,7 @@ try {
 
     $command = new Command();
     //@see: http://www.computerhope.com/unix/curl.htm
-    $lines                  = $command('/bin/env curl -s --ssl-no-revoke -X GET ' . $host . '/unique-number-repository');
+    $lines                  = $command('/bin/env curl -s --ssl-no-revoke -H "Accept: application/json" -X GET ' . $host . '/unique-number-repository');
     $repositoriesAvailable  = (count($lines) > 0);
 
     if ($repositoriesAvailable) {

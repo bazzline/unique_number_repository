@@ -31,7 +31,7 @@ try {
     }
 
     $command = new Command();
-    $lines              = $command('/bin/env curl -s --ssl-no-revoke -X GET ' . $host . '/version');
+    $lines              = $command('/bin/env curl -s --ssl-no-revoke -H "Accept: application/json" -X GET ' . $host . '/version');
     $versionAvailable   = (count($lines) > 0);
 
     if ($versionAvailable) {

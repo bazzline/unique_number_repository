@@ -6,22 +6,22 @@
 namespace Net\Bazzline\UniqueNumberRepository\Application\Service;
 
 use DateTime;
-use Net\Bazzline\Component\Database\FileStorage\Repository;
+use Net\Bazzline\Component\Database\FileStorage\Storage\Storage;
 use Net\Bazzline\UniqueNumberRepository\Domain\Model\UniqueNumberRequest;
 
 class NumberEnumerator
 {
     /**
-     * @var Repository
+     * @var Storage
      */
-    private $repository;
+    private $storage;
 
     /**
-     * @param Repository $repository
+     * @param Storage $storage
      */
-    public function __construct(Repository $repository)
+    public function __construct(Storage $storage)
     {
-        $this->repository = $repository;
+        $this->storage = $storage;
     }
 
     /**
@@ -31,9 +31,9 @@ class NumberEnumerator
     public function increment($repositoryName)
     {
         $currentMaximum = 0;
-        $repository     = $this->repository;
-        $repository->filterBy('repository_name', $repositoryName);
-        $collection     = $repository->readMany();
+        $storage        = $this->storage;
+        $storage->filterBy('repository_name', $repositoryName);
+        $collection     = $storage->readMany();
 
         foreach ($collection as $data) {
             //@todo replace by injected hydrator

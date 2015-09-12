@@ -31,6 +31,6 @@ class UniqueNumberEnumeratorFactory implements FactoryInterface
      */
     public function create()
     {
-        return new NumberEnumerator($this->locator->getUniqueNumberRepository());
+        return new NumberEnumerator($this->locator->getUniqueNumberStorage());
     }
 }

@@ -47,7 +47,7 @@ try {
     $command                    = new Command();
     $urlEncodedRepositoryName   = urlencode($repositoryName);
     //@see: http://blog.scottlowe.org/2014/02/19/using-curl-to-interact-with-a-restful-api/
-    $lines = $command('/bin/env curl -s --ssl-no-revoke -X DELETE ' . $host . '/unique-number-repository/' . $urlEncodedRepositoryName . '/' . $number);
+    $lines = $command('/bin/env curl -s --ssl-no-revoke -H "Accept: application/json" -X DELETE ' . $host . '/unique-number-repository/' . $urlEncodedRepositoryName . '/' . $number);
 
     foreach ($lines as $line) {
         echo $line . PHP_EOL;

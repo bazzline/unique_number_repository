@@ -39,7 +39,7 @@ try {
     $command                    = new Command();
     $urlEncodedRepositoryName   = urlencode($repositoryName);
     //@see: http://www.computerhope.com/unix/curl.htm
-    $lines                  = $command('/bin/env curl -s --ssl-no-revoke -X GET ' . $host . '/unique-number-repository/' . $urlEncodedRepositoryName);
+    $lines                  = $command('/bin/env curl -s --ssl-no-revoke -H "Accept: application/json" -X GET ' . $host . '/unique-number-repository/' . $urlEncodedRepositoryName);
     $repositoriesAvailable  = (count($lines) > 0);
 
     if ($repositoriesAvailable) {

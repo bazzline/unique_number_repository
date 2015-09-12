@@ -5,9 +5,9 @@
     "type": "library",
     "minimum-stability": "dev",
     "require": {
-        "mikecao/flight": "^1.2",
-        "net_bazzline/php_component_database_file_storage": "dev-master",
-        "net_bazzline/php_component_locator_generator": "dev-master"
+        "net_bazzline/php_component_database_file_storage": "0.4.1",
+        "net_bazzline/php_component_locator_generator": "2.0.2",
+        "silex/silex": "~1.3"
     },
     "license": "LGPLv3",
     "authors": [
