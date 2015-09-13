@@ -1,0 +1,55 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../bootstrap/client.php';
+
+
+$usage = 'usage: ' . PHP_EOL .
+    '    ' . basename(__FILE__) . ' <authentication token>' . PHP_EOL;
+
+execute(function () use ($values) {
+
+    throwExceptionIfInvalidNumberOfValuesWasProvided($values, 1);
+
+    list($token)        = extractValues($values);
+    $tokenAsChecksum    = sha1($token);
+
+    throwExceptionIfValueIsInvalid($token, 'authentication token');
+
+    $path   = __DIR__;
+    $files  = array(
+        'client.local.php',
+        'server.local.php'
+    );
+
+    foreach ($files as $file) {
+        $filePath           = $path . '/' . $file;
+        $fileDoesNotExist   = (!file_exists($filePath));
+
+        if ($fileDoesNotExist) {
+            $couldNotCreateFile = (!copy($filePath . '.dist', $filePath));
+
+            if ($couldNotCreateFile) {
+                throw new Exception(
+                    'could not file "' . $filePath . '"'
+                );
+            }
+        }
+
+        $lines = PHP_EOL .
+            '//added on ' . date('Y-m-d H:i:s') . ' by ' . basename(__FILE__) . PHP_EOL .
+            '$token = \'' . $tokenAsChecksum . '\';   //sha1(\'' . $token . '\')';
+
+        $contentWasAdded = (false !==file_put_contents($filePath, $lines . PHP_EOL, FILE_APPEND));
+
+        if ($contentWasAdded) {
+            echo $file . ' adapted' . PHP_EOL;
+        } else {
+            throw new Exception(
+                'could not write into file "' . $filePath . '"'
+            );
+        }
+    }
+
+    echo 'done' . PHP_EOL;
+}, $usage);

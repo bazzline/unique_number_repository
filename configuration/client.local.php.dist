@@ -5,4 +5,4 @@
  */
 
 //the authorization token
-$authorization = '13f0d9c1d3643a86f0daa257be0fb1efe5b9e5a7';    //sha1('unique_number_repository')
+$token = '13f0d9c1d3643a86f0daa257be0fb1efe5b9e5a7';    //sha1('unique_number_repository')

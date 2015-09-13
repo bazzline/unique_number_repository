@@ -41,16 +41,23 @@ To easy things up, this project will create a rest based webservice as backend a
 
 ## Configure
 
+## By Hand
+
     cd <project root>/configuration
     cp client.local.php.dist client.local.php
     #adapt client.local.php
     cp server.local.php.dist server.local.php
     #adapt server.local.php
 
+### With [setup](https://github.com/bazzline/unique_number_repository/blob/master/configuration/setup)
+
+    cd <project root>
+    ./configuration/setup
+
 # Benefits
 
-* 
 * implement token authentication (you can and should override the existing token by creating your own *client.local.php* and *server.local.php* in *configuration*)
+* 
 
 # Thanks
 
@@ -64,6 +71,8 @@ To easy things up, this project will create a rest based webservice as backend a
 * upcomming
     * @todo
         * multiple storage (databases) are supported (right now, [file storage](https://github.com/bazzline/php_component_database_file_storage) is supported)
+* [0.10.2](https://github.com/bazzline/unique_number_repository/tree/0.10.2) - released at 13.09.2015
+    * added *setup* script to easy up after installation configuration
 * [0.10.1](https://github.com/bazzline/unique_number_repository/tree/0.10.1) - released at 13.09.2015
     * fixed authentication problem
 * [0.10.0](https://github.com/bazzline/unique_number_repository/tree/0.10.0) - released at 13.09.2015

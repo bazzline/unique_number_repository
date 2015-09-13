@@ -13,13 +13,17 @@ use Net\Bazzline\Component\CommandCollection\Http\Curl;
 $arguments  = new Arguments($argv);
 $baseUrl    = '/unique-number-repository';
 $command    = new Curl();
+$filePath   = __DIR__ . '/../configuration/client.local.php';
+$token      = '';
 $values     = $arguments->getValues();
 
-require_once __DIR__ . '/../configuration/client.local.php';
+if (file_exists($filePath)) {
+    require_once $filePath;
+}
 //end of dependencies
 
 //begin of configuration
-$command->addHeader('Authorization: ' . $authorization);
+$command->addHeader('Authorization: ' . $token);
 $command->isJson();
 $command->beSilent();
 $command->noSslSecurity();
