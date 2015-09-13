@@ -64,8 +64,10 @@ To easy things up, this project will create a rest based webservice as backend a
 * upcomming
     * @todo
         * multiple storage (databases) are supported (right now, [file storage](https://github.com/bazzline/php_component_database_file_storage) is supported)
+* [0.10.0](https://github.com/bazzline/unique_number_repository/tree/0.10.0) - released at 13.09.2015
     * downgraded to silex 1.2 to support php 5.3.3
-    * fix broken links
+    * fixed broken links
+    * increased compatibility by using '/usr/bin/env' for client code
     * removed unused dependencie
 * [0.9.0](https://github.com/bazzline/unique_number_repository/tree/0.9.0) - released at 12.09.2015
     * silix based server/backend

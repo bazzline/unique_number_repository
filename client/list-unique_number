@@ -1,4 +1,4 @@
-#!/bin/env php
+#!/usr/bin/env php
 <?php
 
 require_once __DIR__ . '/../bootstrap/client.php';
@@ -6,7 +6,7 @@ require_once __DIR__ . '/../bootstrap/client.php';
 $usage = 'usage: ' . PHP_EOL .
     '    ' . basename(__FILE__) . ' <host> <repository name>' . PHP_EOL;
 
-execute(function () use ($authorization, $baseUrl, $command, $values) {
+execute(function () use ($baseUrl, $command, $values) {
 
     throwExceptionIfInvalidNumberOfValuesWasProvided($values, 2);
 

@@ -1,4 +1,4 @@
-#!/bin/env php
+#!/usr/bin/env php
 <?php
 
 require_once __DIR__ . '/../bootstrap/client.php';
@@ -6,7 +6,7 @@ require_once __DIR__ . '/../bootstrap/client.php';
 $usage = 'usage: ' . PHP_EOL .
     '    ' . basename(__FILE__) . ' <host> <applicant name> <repository name>' . PHP_EOL;
 
-execute(function () use ($authorization, $baseUrl, $command, $values) {
+execute(function () use ($baseUrl, $command, $values) {
 
     throwExceptionIfInvalidNumberOfValuesWasProvided($values, 3);
 
@@ -16,11 +16,11 @@ execute(function () use ($authorization, $baseUrl, $command, $values) {
     throwExceptionIfValueIsInvalid($applicantName, 'applicant name');
     throwExceptionIfValueIsInvalid($repositoryName, 'repository name');
 
-    $data                       = array(
+    $data   = array(
         'applicant_name'    => $applicantName,
-        'repository_name'    => $repositoryName
+        'repository_name'   => $repositoryName
     );
-    $lines                      = $command->post($host, $baseUrl, $data);
+    $lines  = $command->post($host, $baseUrl, $data);
 
     foreach ($lines as $line) {
         echo $line . PHP_EOL;

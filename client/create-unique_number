@@ -1,4 +1,4 @@
-#!/bin/env php
+#!/usr/bin/env php
 <?php
 
 require_once __DIR__ . '/../bootstrap/client.php';
@@ -19,8 +19,8 @@ execute(function () use ($authorization, $baseUrl, $command, $values) {
     $data                       = array(
         'applicant_name' => $applicantName
     );
-    $url                        = $baseUrl . '/' . $repositoryName;
-    $lines                      = $command->post($host, $url, $data);
+    $url    = $baseUrl . '/' . $repositoryName;
+    $lines  = $command->post($host, $url, $data);
 
     foreach ($lines as $line) {
         echo $line . PHP_EOL;

@@ -1,4 +1,4 @@
-#!/bin/env php
+#!/usr/bin/env php
 <?php
 
 require_once __DIR__ . '/../bootstrap/client.php';
@@ -8,7 +8,7 @@ const SUPPORTED_VERSION = '1.0.0';
 $usage = 'usage: ' . PHP_EOL .
     '    ' . basename(__FILE__) . ' <host>' . PHP_EOL;
 
-execute(function () use ($authorization, $baseUrl, $command, $values) {
+execute(function () use ($baseUrl, $command, $values) {
 
     throwExceptionIfInvalidNumberOfValuesWasProvided($values, 1);
 
