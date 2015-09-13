@@ -57,7 +57,10 @@ To easy things up, this project will create a rest based webservice as backend a
 # Benefits
 
 * implement token authentication (you can and should override the existing token by creating your own *client.local.php* and *server.local.php* in *configuration*)
-* 
+
+# API
+
+[API](http://www.bazzline.net/53b266b0a2911b7404e1f6bf4cc20b673e04b5bb/index.html) is available at [bazzline.net](http://www.bazzline.net).
 
 # Thanks
 
@@ -71,6 +74,7 @@ To easy things up, this project will create a rest based webservice as backend a
 * upcomming
     * @todo
         * multiple storage (databases) are supported (right now, [file storage](https://github.com/bazzline/php_component_database_file_storage) is supported)
+    * added *API* section
 * [0.10.2](https://github.com/bazzline/unique_number_repository/tree/0.10.2) - released at 13.09.2015
     * added *setup* script to easy up after installation configuration
 * [0.10.1](https://github.com/bazzline/unique_number_repository/tree/0.10.1) - released at 13.09.2015
