@@ -3,12 +3,11 @@
     "description": "free as in freedom unique number repository (web service and client) written in php",
     "keywords": ["php", "cli", "shell", "lgpl", "free as in freedom", "REST", "unique", "number", "repository", "service"],
     "type": "library",
-    "minimum-stability": "dev",
     "require": {
         "net_bazzline/php_component_command_collection": ">=0.0.5",
         "net_bazzline/php_component_database_file_storage": ">=0.6.1",
         "net_bazzline/php_component_locator_generator": "2.0.2",
-        "silex/silex": "~1.2"
+        "silex/silex": "1.2.5"
     },
     "license": "LGPLv3",
     "authors": [
