@@ -1,5 +1,5 @@
 {
-    "name": "net_bazzline/php_unique_number_repository",
+    "name": "net_bazzline/unique_number_repository",
     "description": "free as in freedom unique number repository (web service and client) written in php",
     "keywords": ["php", "cli", "shell", "lgpl", "free as in freedom", "REST", "unique", "number", "repository", "service"],
     "type": "library",
