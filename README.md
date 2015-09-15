@@ -17,7 +17,7 @@ To easy things up, this project will create a rest based webservice as backend a
 
 ## [Command Line Based Frontend (Client)](https://github.com/bazzline/unique_number_repository/blob/master/client)
 
-* commands
+* commands (working only on curl 7.44 since "--ssl-no-revok" is required)
     * [create-repository](https://github.com/bazzline/unique_number_repository/blob/master/client/create-repository) <host> <applicant name> <repository name>
     * [list-repositories](https://github.com/bazzline/unique_number_repository/blob/master/client/list-repositories) <host>
     * [delete-repository](https://github.com/bazzline/unique_number_repository/blob/master/client/delete-repository) <host> <repository name>
@@ -25,7 +25,7 @@ To easy things up, this project will create a rest based webservice as backend a
     * [list-unique_number](https://github.com/bazzline/unique_number_repository/blob/master/client/list-unique_number) <host> <repository name>
     * [delete-unique_number](https://github.com/bazzline/unique_number_repository/blob/master/client/delete-unique_number) <host> <repository name> <number>
 * you can use this as base to implement your own logic 
-    * a [basic example](https://github.com/bazzline/unique_number_repository/blob/master/example/basic_example) with "pre_execution_hook" and "post_execution_hook" will be shipped
+    * a [basic example](https://github.com/bazzline/unique_number_repository/blob/master/example/basic_example) with "pre_execution_hook" and "post_execution_hook" is shipped within
 
 # Install
 
@@ -74,6 +74,9 @@ To easy things up, this project will create a rest based webservice as backend a
 * upcomming
     * @todo
         * multiple storage (databases) are supported (right now, [file storage](https://github.com/bazzline/php_component_database_file_storage) is supported)
+    * fixed issue in authorization request
+    * made https an optional requirement
+    * updated README.md
 * [0.10.3](https://github.com/bazzline/unique_number_repository/tree/0.10.3) - released at 14.09.2015
     * added *API* section
     * updated dependencies

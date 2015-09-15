@@ -23,7 +23,7 @@ $locator        = new ApplicationLocator();
 //end of dependencies
 
 //begin of overriding default functionality
-$application->before(function (Application $application, Request $request) use ($token) {
+$application->before(function (Request $request) use ($application, $token) {
     //begin of only allow requests with valid authorization token
     $isNotAuthorized = ($request->headers->get('authorization') !== $token);
 
