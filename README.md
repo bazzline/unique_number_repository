@@ -74,6 +74,8 @@ To easy things up, this project will create a rest based webservice as backend a
 * upcomming
     * @todo
         * multiple storage (databases) are supported (right now, [file storage](https://github.com/bazzline/php_component_database_file_storage) is supported)
+* [0.11.0](https://github.com/bazzline/unique_number_repository/tree/0.11.0) - released at 20.09.2015
+    * added restriction that only the creator (repository or number) can delete the resource
 * [0.10.4](https://github.com/bazzline/unique_number_repository/tree/0.10.4) - released at 16.09.2015
     * fixed issue in authorization request
     * made https an optional requirement

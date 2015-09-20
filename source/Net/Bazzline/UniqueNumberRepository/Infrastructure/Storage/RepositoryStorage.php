@@ -43,6 +43,15 @@ class RepositoryStorage extends AbstractStorage
      * @param string $name
      * @return $this
      */
+    public function filterByApplicantName($name)
+    {
+        return $this->filterBy(self::KEY_APPLICANT_NAME, $name);
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function filterByName($name)
     {
         return $this->filterBy(self::KEY_NAME, $name);

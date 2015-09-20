@@ -4,9 +4,9 @@
     "keywords": ["php", "cli", "shell", "lgpl", "free as in freedom", "REST", "unique", "number", "repository", "service"],
     "type": "library",
     "require": {
-        "net_bazzline/php_component_command_collection": ">=0.0.7",
+        "net_bazzline/php_component_command_collection": ">=0.0.10",
         "net_bazzline/php_component_database_file_storage": ">=0.6.1",
-        "net_bazzline/php_component_locator_generator": "2.0.2",
+        "net_bazzline/php_component_locator_generator": "2.0.4",
         "silex/silex": "1.2.5"
     },
     "license": "LGPLv3",

@@ -72,7 +72,8 @@ $application->get('/version', function (Application $application) {
 
 $application->delete('/unique-number-repository/{name}', function (Application $application, Request $request) use ($locator) {
     //begin of runtime parameters
-    $name = urldecode($request->get('name'));
+    $name   = urldecode($request->get('name'));
+    $user   = urldecode($request->get('applicant_name'));
     //end of runtime parameters
 
     //begin of dependencies
@@ -82,7 +83,8 @@ $application->delete('/unique-number-repository/{name}', function (Application $
 
     //begin of validation
     $repositoryStorage->resetRuntimeProperties();
-    $repositoryStorage->filterBy('name', $name);
+    $repositoryStorage->filterByApplicantName($user);
+    $repositoryStorage->filterByName($name);
     $repositoryNameDoesNotExist = (!$repositoryStorage->has());
 
     if ($repositoryNameDoesNotExist) {
@@ -92,7 +94,8 @@ $application->delete('/unique-number-repository/{name}', function (Application $
     //end of validation
 
     //begin of process
-    $repositoryStorage->filterBy('name', $name);
+    $repositoryStorage->filterByApplicantName($user);
+    $repositoryStorage->filterByName($name);
     $result = $repositoryStorage->delete();
 
     if ($result === true) {
@@ -186,10 +189,11 @@ $application->post('/unique-number-repository/{name}', function (Application $ap
     return $application->json(array('number' => $uniqueNumberRequest->number()));
     //end of process
 });
-$application->delete('/unique-number-repository/{name}/{number}', function (Application $application, $name, $number) use ($locator) {
+$application->delete('/unique-number-repository/{name}/{number}', function (Application $application, Request $request, $name, $number) use ($locator) {
     //begin of runtime parameters
     $name   = urldecode($name);
     $number = (int) $number;
+    $user   = urldecode($request->get('applicant_name'));
     //end of runtime parameters
 
     //begin of dependencies
@@ -197,6 +201,7 @@ $application->delete('/unique-number-repository/{name}/{number}', function (Appl
     //end of dependencies
 
     //begin of validation
+    $storage->filterByApplicantName($user);
     $storage->filterByNumber($number);
     $storage->filterByRepositoryName($name);
     $numberDoesNotExistInThisRepository = (!$storage->has());
@@ -208,6 +213,7 @@ $application->delete('/unique-number-repository/{name}/{number}', function (Appl
     //end of validation
 
     //begin of process
+    $storage->filterByApplicantName($user);
     $storage->filterByNumber($number);
     $storage->filterByRepositoryName($name);
     $result = $storage->delete();

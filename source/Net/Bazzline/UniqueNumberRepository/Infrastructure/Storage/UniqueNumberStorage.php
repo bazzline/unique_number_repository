@@ -42,6 +42,15 @@ class UniqueNumberStorage extends AbstractStorage
     //end of overridden methods
 
     /**
+     * @param string $name
+     * @return $this
+     */
+    public function filterByApplicantName($name)
+    {
+        return $this->filterBy(self::KEY_APPLICANT_NAME, $name);
+    }
+
+    /**
      * @param int $number
      * @return $this
      */

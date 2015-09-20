@@ -4,20 +4,24 @@
 require_once __DIR__ . '/../bootstrap/client.php';
 
 $usage = 'usage: ' . PHP_EOL .
-    '    ' . basename(__FILE__) . ' <host> <repository name> <number>' . PHP_EOL;
+    '    ' . basename(__FILE__) . ' <host> <applicant name> <repository name> <number>' . PHP_EOL;
 
 execute(function () use ($baseUrl, $command, $values) {
 
-    throwExceptionIfInvalidNumberOfValuesWasProvided($values, 3);
+    throwExceptionIfInvalidNumberOfValuesWasProvided($values, 4);
 
-    list($host, $repositoryName, $number) = extractValues($values);
+    list($host, $applicantName, $repositoryName, $number) = extractValues($values);
 
     throwExceptionIfValueIsInvalid($host, 'host');
+    throwExceptionIfValueIsInvalid($applicantName, 'applicant name');
     throwExceptionIfValueIsInvalid($repositoryName, 'repository name');
     throwExceptionIfValueIsInvalid($number, 'number');
 
+    $data   = array(
+        'applicant_name' => $applicantName
+    );
     $url    = $baseUrl . '/' . $repositoryName . '/' . $number;
-    $lines  = $command->delete($host, $url);
+    $lines  = $command->delete($host, $url, $data);
 
     foreach ($lines as $line) {
         echo $line . PHP_EOL;
