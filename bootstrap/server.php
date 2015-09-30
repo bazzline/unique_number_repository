@@ -28,7 +28,7 @@ $application->before(function (Request $request) use ($application, $token) {
     $isNotAuthorized = ($request->headers->get('authorization') !== $token);
 
     if ($isNotAuthorized) {
-        $application->abort(403);
+        $application->abort(401);
     }
     //end of only allow requests with valid authorization token
 
@@ -48,6 +48,9 @@ $application->error(function (Exception $exception, $code) use ($application) {
             $message = 'not found';
             break;
         case 403:
+            $message = 'forbidden';
+            break;
+        case 401:
             $message = 'unauthorized';
             break;
         case 400:
@@ -207,6 +210,9 @@ $application->delete('/unique-number-repository/{name}/{number}', function (Appl
     $numberDoesNotExistInThisRepository = (!$storage->has());
 
     if ($numberDoesNotExistInThisRepository) {
+        //@todo refactore - check if number exist and later on check if 
+        //applicant name is the same. if the name differs, we have to send a 
+        //403
         $application->abort(404, 'number does not exist in this repository');
     }
     $storage->resetRuntimeProperties();
