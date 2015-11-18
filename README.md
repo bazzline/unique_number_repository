@@ -75,6 +75,8 @@ To easy things up, this project will create a rest based webservice as backend a
     * @todo
         * multiple storage (databases) are supported (right now, [file storage](https://github.com/bazzline/php_component_database_file_storage) is supported)
         * return the right status code (403 instead of 404) if a user tries to delete a number he does not own
+* [0.12.1](https://github.com/bazzline/unique_number_repository/tree/0.12.1) - released at 18.11.2015
+    * updated dependency
 * [0.12.0](https://github.com/bazzline/unique_number_repository/tree/0.12.0) - released at 30.09.2015
     * changed "not authorized" http status code from wrong 403 to right 401
     * introduced right usage of 403

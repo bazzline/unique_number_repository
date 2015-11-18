@@ -7,7 +7,7 @@
         "net_bazzline/php_component_command_collection": ">=0.0.10",
         "net_bazzline/php_component_database_file_storage": ">=0.6.1",
         "net_bazzline/php_component_locator_generator": "2.0.4",
-        "silex/silex": "1.2.5"
+        "silex/silex": ">=1.2.5"
     },
     "license": "LGPLv3",
     "authors": [
