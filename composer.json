@@ -6,7 +6,7 @@
     "require": {
         "net_bazzline/php_component_command_collection": ">=0.0.10",
         "net_bazzline/php_component_database_file_storage": ">=0.6.1",
-        "net_bazzline/php_component_locator_generator": "2.0.5",
+        "net_bazzline/php_component_locator_generator": "2.0.8",
         "silex/silex": ">=1.2.5"
     },
     "license": "LGPLv3",
