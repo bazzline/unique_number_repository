@@ -75,6 +75,8 @@ To easy things up, this project will create a rest based webservice as backend a
     * @todo
         * multiple storage (databases) are supported (right now, [file storage](https://github.com/bazzline/php_component_database_file_storage) is supported)
         * return the right status code (403 instead of 404) if a user tries to delete a number he does not own
+* [0.13.0](https://github.com/bazzline/unique_number_repository/tree/0.13.0) - released at 06.03.2016
+    * moved to psr-4 autoloading
 * [0.12.3](https://github.com/bazzline/unique_number_repository/tree/0.12.3) - released at 18.12.2015
     * updated dependency
 * [0.12.2](https://github.com/bazzline/unique_number_repository/tree/0.12.2) - released at 19.11.2015
@@ -105,3 +107,7 @@ To easy things up, this project will create a rest based webservice as backend a
     * removed unused dependencie
 * [0.9.0](https://github.com/bazzline/unique_number_repository/tree/0.9.0) - released at 12.09.2015
     * silix based server/backend
+
+# Final Words
+
+Star it if you like it :-). Add issues if you need it. Pull patches if you enjoy it. Write a blog entry if you use it. [Donate something](https://gratipay.com/~stevleibelt) if you love it :-].
